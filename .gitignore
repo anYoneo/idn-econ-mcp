@@ -17,3 +17,6 @@ bundle/server/
 
 # paket produk dibangun ulang dengan scripts/build_product.py
 ekspor/
+
+# paket pembeli (dibangun scripts/build_paket_pembeli.py)
+ekspor-pembeli/
