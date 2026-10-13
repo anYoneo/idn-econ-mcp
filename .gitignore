@@ -11,3 +11,6 @@ build/
 # (jika ingin menyertakan data, hapus baris di bawah)
 data/*.db-shm
 data/*.db-wal
+# arsip bundle dibangun ulang dengan scripts/build_bundle.py
+*.mcpb
+bundle/server/

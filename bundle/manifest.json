@@ -1,0 +1,147 @@
+{
+  "manifest_version": "0.2",
+  "name": "indonesia-economic-data",
+  "version": "1.0.2",
+  "description": "Indonesian and ASEAN economic data for AI agents: inflation, CPI, GDP, sector shares, and FX rates against IDR. No API key required.",
+  "long_description": "Gives AI agents real Indonesian and ASEAN economic numbers instead of guesses. 85 time series (14,122 observations, 1960-2026) from World Bank Open Data (CC BY 4.0) plus daily ECB exchange rates against IDR. Tools: search series, fetch a series with period filters, latest FX rates, ASEAN cross-country comparison, indicator catalogue, and health check. Runs locally inside the bundle - no API key and no account needed.",
+  "author": {
+    "name": "Muhammad Riszky Wibowo",
+    "url": "https://github.com/anYoneo"
+  },
+  "homepage": "https://github.com/anYoneo/idn-econ-mcp",
+  "documentation": "https://github.com/anYoneo/idn-econ-mcp#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anYoneo/idn-econ-mcp"
+  },
+  "support": "https://github.com/anYoneo/idn-econ-mcp/issues",
+  "license": "MIT",
+  "keywords": [
+    "indonesia",
+    "asean",
+    "economics",
+    "inflation",
+    "cpi",
+    "gdp",
+    "exchange-rates",
+    "world-bank"
+  ],
+  "server": {
+    "type": "python",
+    "entry_point": "server/server.py",
+    "mcp_config": {
+      "command": "python",
+      "args": [
+        "${__dirname}/server/server.py"
+      ],
+      "env": {
+        "IDN_ECON_DB": "${__dirname}/server/data/vpsrevenue.db"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "cari_series",
+      "description": "Search economic data series by keyword (Indonesia, ASEAN, inflation, GDP, FX, agriculture)",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "q": {
+            "type": "string",
+            "description": "Search keyword, e.g. 'inflasi', 'PDB', 'kurs', 'pertanian'"
+          },
+          "batas": {
+            "type": "integer",
+            "description": "Maximum number of results (default 15)",
+            "minimum": 1,
+            "maximum": 100
+          }
+        },
+        "required": ["q"]
+      }
+    },
+    {
+      "name": "ambil_series",
+      "description": "Fetch data points for one series, with optional period range",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "series_id": {
+            "type": "string",
+            "description": "Exact series ID from cari_series, e.g. 'wb:idn:FP.CPI.TOTL.ZG'"
+          },
+          "mulai": {
+            "type": "string",
+            "description": "Optional start period, e.g. '2015'"
+          },
+          "sampai": {
+            "type": "string",
+            "description": "Optional end period, e.g. '2024'"
+          },
+          "batas": {
+            "type": "integer",
+            "description": "Maximum number of data points (default 200)",
+            "minimum": 1,
+            "maximum": 2000
+          }
+        },
+        "required": ["series_id"]
+      }
+    },
+    {
+      "name": "kurs_terkini",
+      "description": "Latest USD/EUR/SGD/CNY/JPY/MYR exchange rate against IDR, with 30-day history",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "base": {
+            "type": "string",
+            "description": "Source currency: USD, EUR, SGD, CNY, JPY, or MYR (default USD)"
+          },
+          "quote": {
+            "type": "string",
+            "description": "Target currency (default IDR)"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "banding_asean",
+      "description": "Compare one indicator across Indonesia, Malaysia, Thailand, Vietnam, Philippines, Singapore",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "indikator": {
+            "type": "string",
+            "description": "One of: 'inflasi', 'cpi', 'pertanian', 'pangan'",
+            "enum": ["inflasi", "cpi", "pertanian", "pangan"]
+          },
+          "mulai": {
+            "type": "string",
+            "description": "Optional start period, e.g. '2020'"
+          }
+        },
+        "required": []
+      }
+    },
+    {
+      "name": "daftar_indikator",
+      "description": "List all available indicators and FX pairs",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    },
+    {
+      "name": "cek_server",
+      "description": "Server health and dataset summary",
+      "inputSchema": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  ]
+}
