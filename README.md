@@ -1,37 +1,49 @@
 # idn-econ-mcp — Data Ekonomi Indonesia untuk Agen AI
 
 MCP server read-only yang menyajikan data ekonomi & keuangan Indonesia dan ASEAN
-siap pakai untuk agen AI (Claude Desktop, Cursor, VS Code, ChatGPT Desktop, dan
-klien MCP lain). **Tanpa API key. Tanpa biaya.**
+siap pakai untuk agen AI (Claude Desktop, Cursor, VS Code, klien MCP lain).
+**Tanpa API key. Tanpa biaya.**
+
+- Registry MCP resmi: `io.github.anYoneo/indonesia-economic-data`
+- Smithery: `bowolime/indonesia-economic-data` — https://smithery.ai/servers/bowolime/indonesia-economic-data
 
 ## Kenapa ini ada
 
 Kalau Anda meminta agen AI menjawab pertanyaan seperti *"berapa inflasi Indonesia
-dan bagaimana dibanding Malaysia?"*, agen itu menebak atau mengarang. Server ini
-memberi angka nyata dari World Bank Open Data + kurs ECB — langsung, tanpa scraping.
+dan bagaimana dibanding Vietnam?"*, agen itu menebak atau mengarang. Server ini
+memberi angka nyata dari World Bank, IMF, dan ECB — langsung, tanpa scraping.
 
 ## Alat yang tersedia
 
 | Tool | Kegunaan |
 |---|---|
-| `cari_series` | Cari seri data berdasarkan kata kunci (`inflasi`, `PDB`, `kurs`, `pertanian`) |
-| `ambil_series` | Ambil titik data satu seri (mis. `wb:idn:FP.CPI.TOTL.ZG`), dengan filter periode |
+| `cari_series` | Cari seri data berdasarkan kata kunci (`inflasi`, `PDB`, `kurs`, `imf`) |
+| `ambil_series` | Ambil titik data satu seri (mis. `imf:idn:NGDP_RPCH`), dengan filter periode |
 | `kurs_terkini` | Kurs terkini vs Rupiah: USD, EUR, SGD, CNY, JPY, MYR |
-| `banding_asean` | Bandingkan indikator antar 6 negara ASEAN (IDN, MYS, THA, VNM, PHL, SGP) |
+| `banding_asean` | Bandingkan indikator antar 6 negara ASEAN (`inflasi`, `pertumbuhan`, `utang`, …) |
 | `daftar_indikator` | Daftar semua indikator & pasangan kurs yang tersedia |
 | `cek_server` | Status & ringkasan isi basis data |
 
 ## Cakupan data
 
-- **85 seri**, **14.122 observasi**, periode **1960 – 2026** (diperbarui berkala)
-- **Indikator**: inflasi (CPI), indeks harga konsumen, produksi pangan, nilai tambah
-  pertanian (% PDB), dan indikator lain per negara
+- **127 seri**, **16.183 observasi**, periode **1960 – 2031**
 - **Negara**: Indonesia, Malaysia, Thailand, Vietnam, Filipina, Singapura
-- **Kurs**: USD, EUR, SGD, CNY, JPY, MYR terhadap IDR (ECB, harian)
+- **World Bank** (realisasi): inflasi, CPI, PDB, PDB per kapita, pengangguran,
+  penanaman modal, pertanian, pangan, pupuk, internet, harapan hidup, populasi
+- **IMF WEO** (realisasi **+ proyeksi sampai 2031**): inflasi, PDB, PDB per kapita,
+  pertumbuhan riil, pengangguran, utang pemerintah (% PDB), neraca transaksi berjalan
+- **Kurs harian** terhadap IDR (ECB): USD, EUR, SGD, CNY, JPY, MYR
+
+Prefiks `series_id`: `wb:` = World Bank, `imf:` = IMF WEO, `fx:` = kurs ECB.
 
 ## Cara pakai
 
-### Claude Desktop / klien MCP lain (stdio)
+### Bundle MCP (tanpa Python setup)
+
+Unduh `idn-econ-mcp.mcpb` lalu buka di klien yang mendukung bundle MCP (Claude Desktop).
+Bundle berisi server + basis data, ~966 KB.
+
+### stdio manual
 
 ```json
 {
@@ -45,39 +57,39 @@ memberi angka nyata dari World Bank Open Data + kurs ECB — langsung, tanpa scr
 }
 ```
 
-Atau setelah `pip install idn-econ-mcp`:
-
-```json
-{"mcpServers": {"idn-econ": {"command": "idn-econ-mcp"}}}
-```
-
 ### Contoh tanya ke agen
 
 - *"Ambil inflasi Indonesia 2015–2025, lalu bandingkan dengan Vietnam."*
+- *"Berapa proyeksi pertumbuhan PDB Indonesia 2030 menurut IMF?"*
 - *"Berapa kurs USD/IDR terbaru dan bagaimana trennya 30 hari terakhir?"*
-- *"Negara ASEAN mana yang nilai tambah pertaniannya paling besar terhadap PDB?"*
 
-## Membangun basis data sendiri
+## Membangun / memperbarui basis data
 
 ```bash
-python scripts/build_db.py          # ambil ulang dari World Bank + ECB
+python scripts/build_db.py           # World Bank + ECB (butuh collector vps-revenue)
+python scripts/collect_imf.py        # IMF WEO lewat DataMapper API (tanpa key)
+python scripts/build_bundle.py       # bangun idn-econ-mcp.mcpb
+python scripts/build_product.py      # bangun CSV + ZIP paket data untuk dijual
+python tests/test_server.py          # 10 uji (pemanggilan langsung + handshake stdio)
 ```
-
-Basis data juga bisa disalin dari pipeline `vps-revenue`.
 
 ## Sumber data & lisensi
 
-- **World Bank Open Data** — lisensi CC BY 4.0; **komersial diizinkan dengan atribusi**
+- **World Bank Open Data** — CC BY 4.0; **komersial diizinkan dengan atribusi**
+- **IMF World Economic Outlook** (DataMapper API) — publik; periksa syarat komersial IMF
 - **ECB euro foreign exchange reference rates** — boleh dipakai ulang dengan atribusi
 
 Semua keluaran menyertakan kolom `atribusi` supaya Anda mudah mematuhi lisensinya.
 
 ## Batasan (jujur)
 
-- Data **tahunan** untuk indikator World Bank (bukan real-time) — publikasi terbaru
+- Data **tahunan** untuk indikator World Bank/IMF (bukan real-time); publikasi terbaru
   bisa tertinggal beberapa bulan dari kondisi lapangan.
+- Periode setelah tahun berjalan pada data IMF adalah **proyeksi**, bukan realisasi.
+- **BPS tidak disertakan**: `webapi.bps.go.id` membalas 403 (Perimeter WAF) dan
+  mewajibkan pendaftaran API key. IDX juga butuh endpoint internal. Jadi tidak ada
+  sumber Indonesia yang lebih baru dari World Bank/IMF di paket ini.
 - Cakupan indikator terbatas pada yang terdaftar di `daftar_indikator`.
-- Data Indonesia yang lebih baru dari BPS **belum** disertakan.
 
 ## Lisensi
 

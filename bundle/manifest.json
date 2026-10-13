@@ -1,9 +1,9 @@
 {
   "manifest_version": "0.2",
   "name": "indonesia-economic-data",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Indonesian and ASEAN economic data for AI agents: inflation, CPI, GDP, sector shares, and FX rates against IDR. No API key required.",
-  "long_description": "Gives AI agents real Indonesian and ASEAN economic numbers instead of guesses. 85 time series (14,122 observations, 1960-2026) from World Bank Open Data (CC BY 4.0) plus daily ECB exchange rates against IDR. Tools: search series, fetch a series with period filters, latest FX rates, ASEAN cross-country comparison, indicator catalogue, and health check. Runs locally inside the bundle - no API key and no account needed.",
+  "long_description": "Gives AI agents real Indonesian and ASEAN economic numbers instead of guesses. 127 time series, 16,183 observations, 1960-2031: World Bank Open Data (CC BY 4.0), IMF World Economic Outlook via the open DataMapper API (incl. projections to 2031), and daily ECB exchange rates against IDR. Tools: search series, fetch a series with period filters, latest FX rates, ASEAN cross-country comparison, indicator catalogue, and health check. Runs locally inside the bundle - no API key needed.",
   "author": {
     "name": "Muhammad Riszky Wibowo",
     "url": "https://github.com/anYoneo"
@@ -57,7 +57,9 @@
             "maximum": 100
           }
         },
-        "required": ["q"]
+        "required": [
+          "q"
+        ]
       }
     },
     {
@@ -85,7 +87,9 @@
             "maximum": 2000
           }
         },
-        "required": ["series_id"]
+        "required": [
+          "series_id"
+        ]
       }
     },
     {
@@ -115,7 +119,12 @@
           "indikator": {
             "type": "string",
             "description": "One of: 'inflasi', 'cpi', 'pertanian', 'pangan'",
-            "enum": ["inflasi", "cpi", "pertanian", "pangan"]
+            "enum": [
+              "inflasi",
+              "cpi",
+              "pertanian",
+              "pangan"
+            ]
           },
           "mulai": {
             "type": "string",

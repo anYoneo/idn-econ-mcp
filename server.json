@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.anYoneo/indonesia-economic-data",
   "title": "Indonesia Economic & Financial Data",
-  "description": "Indonesian and ASEAN economic data for AI agents: inflation, CPI, GDP, and FX rates vs IDR.",
-  "version": "1.0.1",
+  "description": "Indonesian and ASEAN economic data for AI agents: inflation, GDP, projections to 2031, FX vs IDR.",
+  "version": "1.1.0",
   "repository": {
     "url": "https://github.com/anYoneo/idn-econ-mcp",
     "source": "github"
@@ -11,7 +11,7 @@
   "packages": [
     {
       "registryType": "oci",
-      "identifier": "ghcr.io/anyoneo/idn-econ-mcp:1.0.1",
+      "identifier": "ghcr.io/anyoneo/idn-econ-mcp:1.1.0",
       "transport": {
         "type": "stdio"
       }
