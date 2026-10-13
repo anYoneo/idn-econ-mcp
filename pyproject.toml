@@ -1,0 +1,32 @@
+[project]
+name = "idn-econ-mcp"
+version = "1.0.0"
+description = "MCP server: data ekonomi & keuangan Indonesia siap pakai untuk agen AI (inflasi, PDB, kurs, ASEAN). Tanpa API key."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["mcp", "indonesia", "economics", "data", "worldbank", "ai-agents"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Information Analysis",
+  "Intended Audience :: Developers",
+]
+
+dependencies = [
+  "mcp>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/anYoneo/idn-econ-mcp"
+Repository = "https://github.com/anYoneo/idn-econ-mcp"
+
+[project.scripts]
+idn-econ-mcp = "server:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+py-modules = ["server"]

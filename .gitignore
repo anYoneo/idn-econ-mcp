@@ -1,0 +1,13 @@
+# .gitignore
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+# DB besar: dibangun ulang dengan `python scripts/build_db.py`
+# (jika ingin menyertakan data, hapus baris di bawah)
+data/*.db-shm
+data/*.db-wal

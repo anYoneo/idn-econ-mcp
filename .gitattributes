@@ -1,0 +1,3 @@
+# Paksa LF untuk skrip shell/docker supaya tidak rusak di build
+*.sh text eol=lf
+Dockerfile text eol=lf

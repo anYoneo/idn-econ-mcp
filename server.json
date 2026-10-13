@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.anYoneo/idn-econ",
+  "title": "Indonesia Economic & Financial Data",
+  "description": "Indonesian and ASEAN economic data for AI agents: inflation, CPI, GDP value added, food production, agricultural share, plus live USD/EUR/SGD/CNY/JPY/MYR exchange rates against IDR. No API key required.",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/anYoneo/idn-econ-mcp",
+    "source": "github"
+  },
+  "packages": [
+    {
+      "registryType": "pypi",
+      "identifier": "idn-econ-mcp",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
