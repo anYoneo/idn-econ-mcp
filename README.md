@@ -70,8 +70,70 @@ python scripts/build_db.py           # World Bank + ECB (butuh collector vps-rev
 python scripts/collect_imf.py        # IMF WEO lewat DataMapper API (tanpa key)
 python scripts/build_bundle.py       # bangun idn-econ-mcp.mcpb
 python scripts/build_product.py      # bangun CSV + ZIP paket data untuk dijual
-python tests/test_server.py          # 10 uji (pemanggilan langsung + handshake stdio)
 ```
+
+## Menjalankan tes secara lokal
+
+Prasyarat: **Python 3.10+**. Tidak perlu API key dan tidak perlu koneksi internet —
+tes berjalan terhadap basis data `data/vpsrevenue.db` yang sudah ada di repositori.
+
+### 1. Pasang dependensi
+
+```bash
+python -m venv .venv
+. .venv/bin/activate          # Windows: .venv\Scripts\activate
+pip install -e .
+```
+
+`pip install -e .` memasang dependensi runtime satu-satunya, `mcp>=1.0.0`
+(lihat `pyproject.toml`). Kalau Anda tidak ingin memasang paket, cukup
+`pip install "mcp>=1.0.0"`.
+
+### 2. Jalankan seluruh tes
+
+```bash
+python tests/test_server.py
+```
+
+Keluaran normal berakhir dengan `RINGKASAN: 10/10 lulus` dan exit code `0`.
+Skrip keluar dengan exit code `1` bila ada satu saja uji yang gagal, sehingga
+aman dipakai di CI.
+
+Tes terdiri dari dua bagian:
+
+1. **Panggilan tool langsung** — memanggil fungsi di `src/server.py` (`cek_server`,
+   `cari_series`, `ambil_series`, `kurs_terkini`, `banding_asean`, `daftar_indikator`)
+   terhadap data nyata.
+2. **Handshake stdio MCP** — menjalankan `src/server.py` sebagai subproses lalu
+   mengirim `initialize`, `tools/list`, dan `tools/call` lewat stdin/stdout.
+
+### 3. Menjalankan satu berkas tes saja
+
+Tes ditulis sebagai skrip mandiri (bukan suite pytest), jadi menjalankan satu
+berkas tes = memanggil berkas itu secara langsung. Saat ini hanya ada satu
+berkas, `tests/test_server.py`:
+
+```bash
+python tests/test_server.py
+```
+
+Kalau nanti ditambahkan berkas lain di `tests/` (mis. `tests/test_db.py`),
+jalankan berkas itu saja dengan pola yang sama:
+
+```bash
+python tests/test_db.py
+```
+
+### Menunjuk basis data lain
+
+Semua tes membaca `data/vpsrevenue.db`. Untuk menguji basis data hasil
+`scripts/build_db.py` di lokasi lain, set variabel lingkungan `IDN_ECON_DB`:
+
+```bash
+IDN_ECON_DB=/path/ke/vpsrevenue.db python tests/test_server.py
+```
+
+(Di PowerShell: `$env:IDN_ECON_DB="C:\path\ke\vpsrevenue.db"; python tests/test_server.py`)
 
 ## Sumber data & lisensi
 
